@@ -85,6 +85,9 @@ extern CAN_TX can_tx;                            // CAN发送数据结构体
 extern CAN_RX can_rx;                            // CAN接收数据结构体
 extern FDCAN_FilterTypeDef fdcan_filter_config;  // CAN过滤器配置结构体
 extern FDCAN_TxHeaderTypeDef fdcan_tx_header;    // CAN发送消息头配置结构体
+extern FDCAN_RxHeaderTypeDef rx_header;          // CAN接收消息头配置结构体
+extern uint8_t can_rx_data[8];                   // CAN接收数据数组
+extern uint8_t can_tx_data[8];                   // CAN发送数据数组
 
 // MOS驱动相关全局变量
 extern mosdriver mos_driver;  // MOS驱动数据结构体

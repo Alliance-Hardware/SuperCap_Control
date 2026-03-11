@@ -58,6 +58,7 @@ void MosDriver_stop(mosdriver* driver) {
 void MosDriver_dutylimit(mosdriver* driver, float duty) {
     if (duty > MAX_DUTY) {
         duty = MAX_DUTY;
+
     } else if (duty < MIN_DUTY) {
         duty = MIN_DUTY;
     }

@@ -3,19 +3,22 @@
 // CAN_communicate模块的数据结构体实例化
 CAN_TX can_tx;
 CAN_RX can_rx;
+FDCAN_RxHeaderTypeDef rx_header;
+uint8_t can_rx_data[8] = {0};
+uint8_t can_tx_data[8] = {0};
 
 // CAN过滤器配置结构体
 FDCAN_FilterTypeDef fdcan_filter_config = {
     .IdType = FDCAN_STANDARD_ID,
     .FilterIndex = 0,
-    .FilterType = FDCAN_FILTER_MASK,
+    .FilterType = FDCAN_FILTER_DUAL,
     .FilterConfig = FDCAN_FILTER_TO_RXFIFO0,
     .FilterID1 = RMCS_ID,
     .FilterID2 = LEGGED_ID};
 
 // CAN发送消息头配置
 FDCAN_TxHeaderTypeDef fdcan_tx_header = {
-    .Identifier = 0x300,  // 假设这个是超电的id
+    .Identifier = 0X300,  // 假设这个是超电的id
     .IdType = FDCAN_STANDARD_ID,
     .TxFrameType = FDCAN_DATA_FRAME,
     .DataLength = FDCAN_DLC_BYTES_8,

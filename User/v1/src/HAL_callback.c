@@ -2,7 +2,7 @@
 
 #include "MOS_driver.h"
 #include "module_data.h"
-#include "stm32g4xx_hal_fdcan.h"
+
 void HAL_FDCAN_RxFifo0Callback(FDCAN_HandleTypeDef* hfdcan,
                                uint32_t RxFifo0ITs) {
     if (RxFifo0ITs & FDCAN_IT_RX_FIFO0_NEW_MESSAGE) {
@@ -22,7 +22,7 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef* htim) {
         if (PID_FREQUENCY_INDEX == counter % 2) {
             ADC_Transformer_voltage(&adc_data);
             ADC_Transformer_current(&adc_data);
-            if (adc_data.V_CAP_TF > 26.0f || adc_data.I_CHASSIS_TF > 25.0f) {
+            if (adc_data.V_CAP_TF > 26.0f || adc_data.I_CHASSIS_TF > 15.0f) {
                 MosDriver_stop(&mos_driver);
             }  // 过流保护&过压保护,直接关闭占空比输出
             PID_calculate(&current_pid_configs,
@@ -31,7 +31,9 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef* htim) {
         }
         // 20kHz功率环PID计算和电流环目标值更新
         if (PID_FREQUENCY_INDEX == counter % 5) {
-            chassis_power = adc_data.I_CHASSIS_TF * adc_data.V_CHASSIS_TF;
+            chassis_power =
+                adc_data.I_CHASSIS_TF * adc_data.V_CHASSIS_TF + 2.0f;
+            // 计算当前底盘功率，2W为系统损耗补偿
             PID_calculate(&power_pid_configs, power_pid_configs.target_value,
                           chassis_power);
             current_pid_configs.target_value = power_pid_configs.output;
@@ -41,15 +43,18 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef* htim) {
     if (htim->Instance == TIM16) {
         CAN_send();
         CAN_disconnect_detection();
-        if (adc_data.V_CHASSIS_TF < 15.0f) {
+        if (adc_data.V_CHASSIS_TF < 15.0f &&
+            POWER_ERROR_DETECTION_TIME_INDEX < MAX_POWER_ERROR_DETECTION_TIME) {
             POWER_ERROR_DETECTION_TIME_INDEX++;
-        }  // 电源电压检测计数变量自增
-        if (POWER_ERROR_DETECTION_TIME_INDEX >=
+        }  // 当底盘电压低于15V时开始计数，超过最大值则执行掉电保护，电源电压检测计数变量自增
+        if (POWER_ERROR_DETECTION_TIME_INDEX ==
             MAX_POWER_ERROR_DETECTION_TIME) {
             MosDriver_stop(&mos_driver);
             PID_init(&power_pid_configs);
             PID_init(&current_pid_configs);
-            POWER_ERROR_DETECTION_TIME_INDEX = 0;  // 掉电检测计数变量清零
+            POWER_ERROR_DETECTION_TIME_INDEX =
+                MAX_POWER_ERROR_DETECTION_TIME + 1;
+            // 掉电检测计数变量达到最大值，执行掉电保护，停止MOS驱动，重置PID，防止计数变量溢出,并且只执行一次，直到系统重启
         }
     }
 }

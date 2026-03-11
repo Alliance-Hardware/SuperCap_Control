@@ -25,8 +25,8 @@ void ADC_Transformer_voltage(datacollect* data) {
     // 分压比 11:1, ADC 分辨率 12bit, 参考电压 3.3V
     //  data->V_CHASSIS_TF = (float)data->V_CHASSIS_ADC / 4096.0f * 3.3f
     //  * 11.0f;
-    data->V_CHASSIS_TF = (float)data->V_CHASSIS_ADC * 36.3f / 4096.0f;
-    data->V_CAP_TF = (float)data->V_CAP_ADC * 36.3f / 4096.0f;
+    data->V_CHASSIS_TF = (float)data->V_CHASSIS_ADC * 33.5f / 4096.0f;
+    data->V_CAP_TF = (float)data->V_CAP_ADC * 33.5f / 4096.0f;
 }
 
 void ADC_Transformer_current(datacollect* data) {
@@ -35,6 +35,6 @@ void ADC_Transformer_current(datacollect* data) {
     // 4096.0f* 3.25f- 1.65f)/0.1f
     //  data->I_CAP_TF = (float)(data->I_CAP_ADC / 4096.0f* 3.25f - 1.65f) /0.1f
 
-    data->I_CAP_TF = (float)(data->I_CAP_ADC * 0.0079345f - 16.8f);
-    data->I_CHASSIS_TF = (float)(data->I_CHASSIS_ADC * 0.0079345f - 16.5f);
+    data->I_CAP_TF = (float)(data->I_CAP_ADC * 0.0079345f - 16.2f);
+    data->I_CHASSIS_TF = (float)(data->I_CHASSIS_ADC * 0.0079345f - 16.2f);
 }
