@@ -4,7 +4,7 @@
 #include "module_data.h"
 
 // 设备固有常量定义
-#define RMCS_ID 0x01                      // RMCS 设备ID
+#define RMCS_ID 0x1FE                     // RMCS 设备ID
 #define LEGGED_ID 0x02                    // Legged 设备ID
 extern const uint32_t SUPERCAP_ID[4][3];  // Supercap 设备ID//测试板的ID
 extern const int DEFAULT_POWER_CHASSIS;   // 初始默认底盘功率（单位：W）
@@ -32,6 +32,8 @@ extern const float DUTY_INDEX;
 // 由于半桥没有办法真正意义常开。缩短实际占空比时间用于自举电容充电，此处为缩短使用的占空比系数
 extern const float MAX_DUTY;
 extern const float MIN_DUTY;
+extern const float V_CAP_FULL;
+extern const float ALPHA;
 
 // 保护机制时间常数定义
 extern const int MAX_POWER_ERROR_DETECTION_TIME;     // 最大底盘电压异常检测时间

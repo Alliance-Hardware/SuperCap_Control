@@ -10,8 +10,7 @@
 #include "stm32g4xx_hal_fdcan.h"
 #include "stm32g4xx_hal_tim.h"
 #include "tim.h"
-
-void HAL_FDCAN_RxFifo0Msgallback(FDCAN_HandleTypeDef* hfdcan,
-                                 uint32_t RxFifo0ITs);
+void HAL_FDCAN_RxFifo0Callback(FDCAN_HandleTypeDef* hfdcan,
+                               uint32_t RxFifo0ITs);
 void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef* hadc);
 void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef* htim);

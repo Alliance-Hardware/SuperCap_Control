@@ -47,6 +47,8 @@ typedef struct {
     uint32_t compare4_index;  // 触发采样的比较值
 
     uint32_t Phase_shift_angle;  // 相位移角度
+    float OUT_MAX;               // 最大输出占空比
+    float OUT_MIN;               // 最小输出占空比
 } mosdriver;
 
 // Data_collect模块的数据结构体定义
@@ -102,3 +104,5 @@ extern PID_Configs current_pid_configs;  // 电流环PID配置结构体
 extern PID_Configs voltage_pid_configs;  // 电压环PID配置结构体
 extern PID_Configs power_pid_configs;    // 功率环PID配置结构体
 extern float chassis_power;              // 当前底盘功率
+extern float dynamic_max_duty;           // 动态最大占空比
+extern float dynamic_max_duty_pre;       // 上一次动态最大占空比

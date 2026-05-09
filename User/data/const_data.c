@@ -3,9 +3,9 @@
 // 设备固有常量定义
 const uint32_t SUPERCAP_ID[4][3] = {
     {0x12345678, 0x9ABCDEF0, 0x13579BDF},
-    {0x001A0044, 0x59315007, 0x20393448},
-    {0x32345678, 0x9ABCDEF0, 0x13579BDF},
-    {0X001A003C, 0X59315007, 0X20393448}};  // Supercap 设备ID//测试板的ID
+    {0x00160039, 0x3330500C, 0x20383352},
+    {0x00320016, 0x3335510A, 0x39323936},
+    {0x00450047, 0x3330500C, 0x20383352}};  // Supercap 设备ID//测试板的ID
 
 const int DEFAULT_POWER_CHASSIS = 45;  // 初始默认底盘功率（单位：W）
 
@@ -19,7 +19,7 @@ const float ADC_CALIBRATION_CONFIGS[4][4][2] = {
 
 // 底盘工作电压范围
 const float V_CHASSIS_MAX = 26.0f;
-const float V_CHASSIS_MIN = 22.0f;
+const float V_CHASSIS_MIN = 20.0f;
 
 // 底盘工作功率范围
 const float P_CHASSIS_MAX = 120.0f;
@@ -35,11 +35,13 @@ const uint32_t CYCLE_ZERO = 0;
 const uint32_t CYCLE_INDEX = 27200;
 const uint32_t HALF_CYCLE_INDEX = CYCLE_INDEX / 2;
 const float DUTY_INDEX = 0.9f;
-const float MAX_DUTY = 0.53f;  // 13.0f / 24.0f最大占空比限制
-const float MIN_DUTY = 0.01f;  // 最小占空比限制0.01f,用于缓启动
+const float MAX_DUTY = 0.53f;    // 电池20V-新电容组最大安全电压23V
+const float MIN_DUTY = 0.01f;    // 最小占空比限制0.01f,用于缓启动'
+const float V_CAP_FULL = 23.0f;  // 电容安全满电电压
+const float ALPHA = 0.1f;        // 低通滤波器系数
 
 // 保护机制时间常数定义
-const int MAX_POWER_ERROR_DETECTION_TIME = 500;     // 最大底盘电压异常检测时间
+const int MAX_POWER_ERROR_DETECTION_TIME = 100;     // 最大底盘电压异常检测时间
 const int MAX_CAN_DISCONNECT_DETECTION_TIME = 500;  // 最大CAN断联检测时间
 int POWER_ERROR_DETECTION_TIME_INDEX = 0;     // 底盘电压异常检测时间计数变量
 int CAN_DISCONNECT_DETECTION_TIME_INDEX = 0;  // CAN断联检测时间计数变量

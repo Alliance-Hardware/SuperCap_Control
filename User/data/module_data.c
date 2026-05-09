@@ -11,10 +11,10 @@ uint8_t can_tx_data[8] = {0};
 FDCAN_FilterTypeDef fdcan_filter_config = {
     .IdType = FDCAN_STANDARD_ID,
     .FilterIndex = 0,
-    .FilterType = FDCAN_FILTER_DUAL,
+    .FilterType = FDCAN_FILTER_MASK,
     .FilterConfig = FDCAN_FILTER_TO_RXFIFO0,
-    .FilterID1 = RMCS_ID,
-    .FilterID2 = LEGGED_ID};
+    .FilterID1 = 0x000,   // ID
+    .FilterID2 = 0x000};  // Mask，全 0 表示不过滤任何位
 
 // CAN发送消息头配置
 FDCAN_TxHeaderTypeDef fdcan_tx_header = {
@@ -39,6 +39,8 @@ PID_Configs voltage_pid_configs;  // 电压环PID配置结构体全局定义
 PID_Configs current_pid_configs;  // 电流环PID配置结构体全局定义
 PID_Configs power_pid_configs;    // 功率环PID配置结构体全局定义
 float chassis_power;              // 当前底盘功率
+float dynamic_max_duty;           // 动态最大占空比
+float dynamic_max_duty_pre;       // 上一次动态最大占空比
 
 // ADC校准配置数组实例化
 float ADC_CALIBRATION_CONFIGS_BOARD[4][2] = {

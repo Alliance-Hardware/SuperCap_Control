@@ -108,6 +108,7 @@ int main(void) {
     MX_TIM8_Init();
     MX_TIM2_Init();
     /* USER CODE BEGIN 2 */
+    HAL_Delay(3000);  // 延时3秒缓启动上电，适配新电池
     SuperCap_init();
     SuperCap_softstart();
     HAL_TIM_Base_Start_IT(&htim16);
