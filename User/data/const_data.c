@@ -35,10 +35,9 @@ const uint32_t CYCLE_ZERO = 0;
 const uint32_t CYCLE_INDEX = 27200;
 const uint32_t HALF_CYCLE_INDEX = CYCLE_INDEX / 2;
 const float DUTY_INDEX = 0.9f;
-const float MAX_DUTY =
-    0.535f;  // buck-boost: D=Vout/(Vin+Vout), Vin=20V, Vout=23V
+const float MAX_DUTY = 0.53f;    // 电池20V-新电容组最大安全电压23V
 const float MIN_DUTY = 0.01f;    // 最小占空比限制0.01f,用于缓启动'
-const float V_CAP_FULL = 23.0f;  // 电容安全满电电压
+const float V_CAP_FULL = 26.0f;  // 电容安全满电电压
 const float ALPHA = 0.1f;        // 低通滤波器系数
 
 // 保护机制时间常数定义
