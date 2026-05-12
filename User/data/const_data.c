@@ -2,8 +2,8 @@
 
 // 设备固有常量定义
 const uint32_t SUPERCAP_ID[4][3] = {
-    {0x12345678, 0x9ABCDEF0, 0x13579BDF},
-    {0x00160039, 0x3330500C, 0x20383352},
+    {0x00040015, 0x3335510A, 0x39323936},
+    {0x003E0035, 0x3335510A, 0x39323936},
     {0x00320016, 0x3335510A, 0x39323936},
     {0x00450047, 0x3330500C, 0x20383352}};  // Supercap 设备ID//测试板的ID
 
@@ -26,7 +26,7 @@ const float P_CHASSIS_MAX = 120.0f;
 const float P_CHASSIS_MIN = 35.0f;  // 底盘能量消耗至0后，机器人进入节能模式 35W
 
 // 超级电容工作电压、电流范围
-const float V_CAP_MAX = 26.0f;
+const float V_CAP_MAX = 23.0f;
 const float V_CAP_MIN = 4.0f;
 const float I_CAP_MAX = 10.0f;
 const float I_CAP_MIN = -10.0f;
@@ -35,14 +35,15 @@ const uint32_t CYCLE_ZERO = 0;
 const uint32_t CYCLE_INDEX = 27200;
 const uint32_t HALF_CYCLE_INDEX = CYCLE_INDEX / 2;
 const float DUTY_INDEX = 0.9f;
-const float MAX_DUTY = 0.53f;    // 电池20V-新电容组最大安全电压23V
+const float MAX_DUTY =
+    0.535f;  // buck-boost: D=Vout/(Vin+Vout), Vin=20V, Vout=23V
 const float MIN_DUTY = 0.01f;    // 最小占空比限制0.01f,用于缓启动'
 const float V_CAP_FULL = 23.0f;  // 电容安全满电电压
 const float ALPHA = 0.1f;        // 低通滤波器系数
 
 // 保护机制时间常数定义
-const int MAX_POWER_ERROR_DETECTION_TIME = 100;     // 最大底盘电压异常检测时间
-const int MAX_CAN_DISCONNECT_DETECTION_TIME = 500;  // 最大CAN断联检测时间
+const int MAX_POWER_ERROR_DETECTION_TIME = 1000;     // 最大底盘电压异常检测时间
+const int MAX_CAN_DISCONNECT_DETECTION_TIME = 5000;  // 最大CAN断联检测时间
 int POWER_ERROR_DETECTION_TIME_INDEX = 0;     // 底盘电压异常检测时间计数变量
 int CAN_DISCONNECT_DETECTION_TIME_INDEX = 0;  // CAN断联检测时间计数变量
 uint32_t PID_FREQUENCY_INDEX = 0;             // PID控制频率计数变量

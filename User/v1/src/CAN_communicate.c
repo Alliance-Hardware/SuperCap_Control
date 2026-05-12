@@ -22,11 +22,25 @@ void CAN_init() {
     HAL_FDCAN_Start(&hfdcan2);
 }
 
+static uint16_t double_to_uint16(double x, double min, double max) {
+    if (x < min)
+        x = min;
+    else if (x > max)
+        x = max;
+
+    const double span = max - min;
+    if (span <= 0.0) return 0;
+
+    const double scale = 65535.0;  // uint16_t 满量程
+    return (uint16_t)((x - min) * scale / span + 0.5);
+}
+
 void CAN_send() {
-    can_tx.chassis_power = (uint16_t)(chassis_power * 10);
-    // 将底盘功率放大10倍，保留一位小数
-    can_tx.supercap_voltage = (uint16_t)adc_data.V_CAP_TF;
-    can_tx.chassis_voltage = (uint16_t)adc_data.V_CHASSIS_TF;
+    // 按接收端映射反向编码
+    can_tx.chassis_power = double_to_uint16(chassis_power, -100.0, 400.0);
+    can_tx.supercap_voltage = double_to_uint16(adc_data.V_CAP_TF, 0.0, 50.0);
+    can_tx.chassis_voltage = double_to_uint16(adc_data.V_CHASSIS_TF, 0.0, 50.0);
+
     if (can_rx.enabled) {
         can_tx.enabled = 1;
         can_tx.unused = 1;
@@ -34,12 +48,13 @@ void CAN_send() {
         can_tx.enabled = 0;
         can_tx.unused = 0;
     }
-    can_tx_data[0] = (can_tx.chassis_power >> 8);
-    can_tx_data[1] = (can_tx.chassis_power & 0xFF);
-    can_tx_data[2] = (can_tx.supercap_voltage >> 8);
-    can_tx_data[3] = (can_tx.supercap_voltage & 0xFF);
-    can_tx_data[4] = (can_tx.chassis_voltage >> 8);
-    can_tx_data[5] = (can_tx.chassis_voltage & 0xFF);
+    // 小端序发送（低字节在前），与接收端 bit_cast 结构体一致
+    can_tx_data[0] = (uint8_t)(can_tx.chassis_power & 0xFF);
+    can_tx_data[1] = (uint8_t)(can_tx.chassis_power >> 8);
+    can_tx_data[2] = (uint8_t)(can_tx.supercap_voltage & 0xFF);
+    can_tx_data[3] = (uint8_t)(can_tx.supercap_voltage >> 8);
+    can_tx_data[4] = (uint8_t)(can_tx.chassis_voltage & 0xFF);
+    can_tx_data[5] = (uint8_t)(can_tx.chassis_voltage >> 8);
     can_tx_data[6] = (can_tx.enabled);
     can_tx_data[7] = (can_tx.unused);
     HAL_FDCAN_AddMessageToTxFifoQ(&hfdcan2, &fdcan_tx_header, can_tx_data);
@@ -56,10 +71,9 @@ void CAN_send() {
 }
 
 void CAN_receive() {
-    if (HAL_FDCAN_GetRxFifoFillLevel(&hfdcan2, FDCAN_RX_FIFO0) > 0) {
-        HAL_FDCAN_GetRxMessage(&hfdcan2, FDCAN_RX_FIFO0, &rx_header,
-                               can_rx_data);
-        if (rx_header.Identifier == 0X01) {
+    if (HAL_FDCAN_GetRxMessage(&hfdcan2, FDCAN_RX_FIFO0, &rx_header,
+                               can_rx_data) == HAL_OK) {
+        if (rx_header.Identifier == RMCS_ID) {
             can_rx.targetChassisPower = can_rx_data[6];
             can_rx.enabled = can_rx_data[7];
             // can信息有效性检查
@@ -71,6 +85,7 @@ void CAN_receive() {
             } else if (can_rx.targetChassisPower < P_CHASSIS_MIN) {
                 can_rx.targetChassisPower = P_CHASSIS_MIN;
             }
+            power_pid_configs.target_value = can_rx.targetChassisPower;
             // 避免上位机发送功率错误导致的功率控制异常
         }
     }

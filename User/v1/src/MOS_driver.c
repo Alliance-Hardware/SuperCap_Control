@@ -42,6 +42,8 @@ void MosDriver_init(mosdriver* driver) {
     driver->cap_compare1_index = 0.0;
     driver->cap_compare3_index = 0.0;
     driver->Phase_shift_angle = 0.0;
+    driver->OUT_MAX = MAX_DUTY;
+    driver->OUT_MIN = MIN_DUTY;
 }
 
 void MosDriver_stop(mosdriver* driver) {
@@ -56,11 +58,10 @@ void MosDriver_stop(mosdriver* driver) {
 }
 
 void MosDriver_dutylimit(mosdriver* driver, float duty) {
-    if (duty > MAX_DUTY) {
-        duty = MAX_DUTY;
-
-    } else if (duty < MIN_DUTY) {
-        duty = MIN_DUTY;
+    if (duty > driver->OUT_MAX) {
+        duty = driver->OUT_MAX;
+    } else if (duty < driver->OUT_MIN) {
+        duty = driver->OUT_MIN;
     }
     MosDriver_chassis_set(duty, driver);
     MosDriver_cap_set(1 - duty, driver);
