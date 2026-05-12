@@ -1,5 +1,4 @@
 #include "module_data.h"
-
 // CAN_communicate模块的数据结构体实例化
 CAN_TX can_tx;
 CAN_RX can_rx;
