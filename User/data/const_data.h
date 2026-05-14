@@ -24,6 +24,11 @@ extern const float V_CAP_MIN;
 extern const float I_CAP_MAX;
 extern const float I_CAP_MIN;
 
+// 低压保护参数
+extern const float V_CAP_LOW_THRESHOLD;          // 低电压保护触发阈值
+extern const float V_CAP_PROTECT_TARGET;          // 低压保护目标电压，下限占空比固定用此电压计算
+extern const float I_CAP_DISCHARGE_THRESHOLD;    // 电容放电状态判断阈值
+
 // 开关管驱动参数
 extern const uint32_t CYCLE_ZERO;
 extern const uint32_t CYCLE_INDEX;

@@ -20,20 +20,20 @@ void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef* hadc) {
 void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef* htim) {
     if (htim->Instance == TIM8) {
         uint32_t counter = __HAL_TIM_GET_COUNTER(&htim8);
-        // 50kHz电流环PID计算和MOS驱动更新,过流保护,过压保护
+        // 50kHz电流环PID计算和MOS驱动更新,过压保护
         if (PID_FREQUENCY_INDEX == counter % 2) {
             ADC_Transformer_voltage(&adc_data);
             ADC_Transformer_current(&adc_data);
-            if (adc_data.V_CAP_TF > 27.0f || adc_data.I_CHASSIS_TF > 15.0f) {
+            if (adc_data.V_CAP_TF > 27.0f) {
                 MosDriver_stop(&mos_driver);
                 PID_init(&power_pid_configs);
                 PID_init(&current_pid_configs);
-            }  // 过流保护&过压保护,直接关闭占空比输出
+            }  // 过压保护,直接关闭占空比输出
             PID_calculate(&current_pid_configs,
                           current_pid_configs.target_value, adc_data.I_CAP_TF);
             MosDriver_dutylimit(&mos_driver, current_pid_configs.output);
         }
-        // 20kHz功率环PID计算和电流环目标值更新
+        // 20kHz功率环PID计算,电流环目标值更新,低压保护
         if (PID_FREQUENCY_INDEX == counter % 5) {
             chassis_power =
                 adc_data.I_CHASSIS_TF * adc_data.V_CHASSIS_TF + 2.0f;
@@ -51,7 +51,15 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef* htim) {
                 dynamic_max_duty = MAX_DUTY;
                 dynamic_max_duty_pre = MAX_DUTY;
             }
-
+            // 低压保护：低于阈值且非强充电状态，抬高最低占空比阻止继续放电
+            if (adc_data.V_CAP_TF <= V_CAP_LOW_THRESHOLD &&
+                adc_data.I_CAP_TF >= I_CAP_DISCHARGE_THRESHOLD) {
+                mos_driver.OUT_MIN =
+                    V_CAP_PROTECT_TARGET /
+                    (adc_data.V_CHASSIS_TF + V_CAP_PROTECT_TARGET);
+            } else {
+                mos_driver.OUT_MIN = MIN_DUTY;
+            }
             // 计算当前底盘功率，2W为系统损耗补偿
             PID_calculate(&power_pid_configs, power_pid_configs.target_value,
                           chassis_power);
