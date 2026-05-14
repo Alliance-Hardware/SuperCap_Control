@@ -30,6 +30,11 @@ const float V_CAP_MAX = 23.0f;
 const float V_CAP_MIN = 4.0f;
 const float I_CAP_MAX = 10.0f;
 const float I_CAP_MIN = -10.0f;
+
+// 低压保护参数
+const float V_CAP_LOW_THRESHOLD = 10.0f;          // 低于此电压开始抬高最低占空比
+const float V_CAP_PROTECT_TARGET = 8.0f;           // 低压保护目标电压，下限占空比固定用此电压计算
+const float I_CAP_DISCHARGE_THRESHOLD = -10.0f; // 电容电流大于此值认为非强充电状态
 // 开关管驱动参数
 const uint32_t CYCLE_ZERO = 0;
 const uint32_t CYCLE_INDEX = 27200;
