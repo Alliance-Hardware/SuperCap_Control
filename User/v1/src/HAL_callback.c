@@ -53,7 +53,7 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef* htim) {
             }
             // 低压保护：低于阈值且非强充电状态，抬高最低占空比阻止继续放电
             if (adc_data.V_CAP_TF <= V_CAP_LOW_THRESHOLD &&
-                adc_data.I_CAP_TF >= I_CAP_DISCHARGE_THRESHOLD) {
+                adc_data.I_CAP_TF <= I_CAP_DISCHARGE_THRESHOLD) {
                 mos_driver.OUT_MIN =
                     V_CAP_PROTECT_TARGET /
                     (adc_data.V_CHASSIS_TF + V_CAP_PROTECT_TARGET);
