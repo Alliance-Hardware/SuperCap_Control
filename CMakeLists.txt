@@ -81,7 +81,7 @@ target_include_directories(${CMAKE_PROJECT_NAME} PRIVATE
 )
 
 # Add include directories for ARM toolchain
-include_directories("C:/Users/Administrator/AppData/Local/stm32cube/gnu-tools-for-stm32/13.3.1+st.9/arm-none-eabi/include")
+include_directories(/usr/lib/arm-none-eabi/include)
 
 # Add project symbols (macros)
 target_compile_definitions(${CMAKE_PROJECT_NAME} PRIVATE

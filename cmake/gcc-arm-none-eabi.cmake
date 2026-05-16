@@ -1,8 +1,8 @@
 set(CMAKE_SYSTEM_NAME Generic)
 set(CMAKE_SYSTEM_PROCESSOR arm)
-set(CMAKE_C_COMPILER "C:/Users/Administrator/AppData/Local/stm32cube/gnu-tools-for-stm32/13.3.1+st.9/bin/arm-none-eabi-gcc.exe")
-set(CMAKE_CXX_COMPILER "C:/Users/Administrator/AppData/Local/stm32cube/gnu-tools-for-stm32/13.3.1+st.9/bin/arm-none-eabi-g++.exe")
-set(CMAKE_ASM_COMPILER "C:/Users/Administrator/AppData/Local/stm32cube/gnu-tools-for-stm32/13.3.1+st.9/bin/arm-none-eabi-gcc.exe")
+set(CMAKE_C_COMPILER arm-none-eabi-gcc)
+set(CMAKE_CXX_COMPILER arm-none-eabi-g++)
+set(CMAKE_ASM_COMPILER arm-none-eabi-gcc)
 
 set(CMAKE_TRY_COMPILE_TARGET_TYPE STATIC_LIBRARY)
 
@@ -29,10 +29,10 @@ set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -Wl,--print-memory-usage")
 set(TOOLCHAIN_LINK_LIBRARIES "m")
 
 # Add include directories for ARM toolchain
-include_directories("C:/Users/Administrator/AppData/Local/stm32cube/gnu-tools-for-stm32/13.3.1+st.9/arm-none-eabi/include")
+include_directories(/usr/lib/arm-none-eabi/include)
 
 # Add library directories if needed
-link_directories("C:/Users/Administrator/AppData/Local/stm32cube/gnu-tools-for-stm32/13.3.1+st.9/arm-none-eabi/lib/hard")
+link_directories(/usr/lib/arm-none-eabi/lib/hard)
 
 # Add executable suffix
 set(CMAKE_EXECUTABLE_SUFFIX_C ".elf")
