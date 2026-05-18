@@ -74,8 +74,8 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef* htim) {
             POWER_ERROR_DETECTION_TIME_INDEX++;
         }
         // 检测电池掉电情况，低于15V进行掉电检测自增
-        else if (adc_data.V_CHASSIS_TF < 18.0f) {
-            POWER_ERROR_DETECTION_TIME_INDEX += 10;
+        else if (adc_data.V_CHASSIS_TF < 20.0f) {
+            POWER_ERROR_DETECTION_TIME_INDEX += 50;
         } else {
             POWER_ERROR_DETECTION_TIME_INDEX = 0;
         }
