@@ -2,8 +2,8 @@
 
 // 设备固有常量定义
 const uint32_t SUPERCAP_ID[4][3] = {
-    {0x00040015, 0x3335510A, 0x39323936},
-    {0x003E0035, 0x3335510A, 0x39323936},
+    {0x00060015, 0x3335510A, 0x39323936},
+    {0x00390016, 0x3335510A, 0x39323936},
     {0x00320016, 0x3335510A, 0x39323936},
     {0x00450047, 0x3330500C, 0x20383352}};  // Supercap 设备ID//测试板的ID
 
@@ -32,9 +32,11 @@ const float I_CAP_MAX = 10.0f;
 const float I_CAP_MIN = -10.0f;
 
 // 低压保护参数
-const float V_CAP_LOW_THRESHOLD = 10.0f;          // 低于此电压开始抬高最低占空比
-const float V_CAP_PROTECT_TARGET = 8.0f;           // 低压保护目标电压，下限占空比固定用此电压计算
-const float I_CAP_DISCHARGE_THRESHOLD = -10.0f; // 电容电流大于此值认为非强充电状态
+const float V_CAP_LOW_THRESHOLD = 10.0f;  // 低于此电压开始抬高最低占空比
+const float V_CAP_PROTECT_TARGET =
+    8.0f;  // 低压保护目标电压，下限占空比固定用此电压计算
+const float I_CAP_DISCHARGE_THRESHOLD =
+    -10.0f;  // 电容电流大于此值认为非强充电状态
 // 开关管驱动参数
 const uint32_t CYCLE_ZERO = 0;
 const uint32_t CYCLE_INDEX = 27200;
