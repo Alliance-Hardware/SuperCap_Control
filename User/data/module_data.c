@@ -40,6 +40,10 @@ PID_Configs power_pid_configs;    // 功率环PID配置结构体全局定义
 float chassis_power;              // 当前底盘功率
 float dynamic_max_duty;           // 动态最大占空比
 float dynamic_max_duty_pre;       // 上一次动态最大占空比
+float chassis_voltage_window;     // 底盘电压窗口滤波值
+// 底盘电压窗口滤波相关变量
+float chassis_voltage_window_buf[10] = {0};
+uint8_t chassis_voltage_window_idx = 0;
 
 // ADC校准配置数组实例化
 float ADC_CALIBRATION_CONFIGS_BOARD[4][2] = {
