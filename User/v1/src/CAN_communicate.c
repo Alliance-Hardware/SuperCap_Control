@@ -78,9 +78,6 @@ void CAN_receive() {
             can_rx.targetChassisPower = can_rx_data[6];
             can_rx.enabled = can_rx_data[7];
             // can信息有效性检查
-            if (can_rx.enabled != 1 && can_rx.enabled != 0) {
-                // MosDriver_stop(&mos_driver);
-            }
             if (can_rx.targetChassisPower > P_CHASSIS_MAX) {
                 can_rx.targetChassisPower = P_CHASSIS_MAX;
             } else if (can_rx.targetChassisPower < P_CHASSIS_MIN) {
