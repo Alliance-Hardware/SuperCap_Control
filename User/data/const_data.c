@@ -54,3 +54,6 @@ const int MAX_CAN_DISCONNECT_DETECTION_TIME = 5000;  // 最大CAN断联检测时
 int POWER_ERROR_DETECTION_TIME_INDEX = 0;     // 底盘电压异常检测时间计数变量
 int CAN_DISCONNECT_DETECTION_TIME_INDEX = 0;  // CAN断联检测时间计数变量
 uint32_t PID_FREQUENCY_INDEX = 0;             // PID控制频率计数变量
+
+// 底盘电压窗口滤波相关变量
+int CHASSIS_VOLTAGE_WINDOW_FILTER_FREQUENCY_INDEX = 0;

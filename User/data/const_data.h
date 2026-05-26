@@ -25,9 +25,10 @@ extern const float I_CAP_MAX;
 extern const float I_CAP_MIN;
 
 // 低压保护参数
-extern const float V_CAP_LOW_THRESHOLD;          // 低电压保护触发阈值
-extern const float V_CAP_PROTECT_TARGET;          // 低压保护目标电压，下限占空比固定用此电压计算
-extern const float I_CAP_DISCHARGE_THRESHOLD;    // 电容放电状态判断阈值
+extern const float V_CAP_LOW_THRESHOLD;  // 低电压保护触发阈值
+extern const float
+    V_CAP_PROTECT_TARGET;  // 低压保护目标电压，下限占空比固定用此电压计算
+extern const float I_CAP_DISCHARGE_THRESHOLD;  // 电容放电状态判断阈值
 
 // 开关管驱动参数
 extern const uint32_t CYCLE_ZERO;
@@ -46,3 +47,7 @@ extern const int MAX_CAN_DISCONNECT_DETECTION_TIME;  // 最大CAN断联检测时
 extern int POWER_ERROR_DETECTION_TIME_INDEX;     // 底盘电压异常检测时间计数变量
 extern int CAN_DISCONNECT_DETECTION_TIME_INDEX;  // CAN断联检测时间计数变量
 extern uint32_t PID_FREQUENCY_INDEX;             // PID控制频率计数变量
+
+// 底盘电压窗口滤波参数
+extern int
+    CHASSIS_VOLTAGE_WINDOW_FILTER_FREQUENCY_INDEX;  // 底盘电压窗口滤波频率计数变量
