@@ -5,19 +5,6 @@
 #include "const_data.h"
 #include "main.h"
 #include "stm32g4xx_hal_fdcan.h"
-
-// 控制算法开关（放在枚举之外，作为独立的常量）
-#define control_v1 0  // 控制算法v1
-#define control_v2 0  // 控制算法v2
-
-/*这里有两个版本是由于版本一是洪泓霖学长设计的控制算法，版本二是我
-新设计的控制算法，本套代码主要目的是重构洪泓霖学长的代码，提供更好
-的调试框架，其次才是我考虑实现我的控制算法，具体这两种控制算法的设
-计可以查看下面这个链接:
-https://fa4g5no1b1f.feishu.cn/wiki/AhU2wcN2ditQpXkVa6RcQfOXnyc
-
-// */
-
 // 存放超级电容相关的运行状态枚举
 enum State {
     DCDC_OUTPUT_DISABLE = 0,  // DCDC 输出关闭

@@ -32,20 +32,21 @@ const float I_CAP_MAX = 10.0f;
 const float I_CAP_MIN = -10.0f;
 
 // 低压保护参数
-const float V_CAP_LOW_THRESHOLD = 10.0f;  // 低于此电压开始抬高最低占空比
-const float V_CAP_PROTECT_TARGET =
-    8.0f;  // 低压保护目标电压，下限占空比固定用此电压计算
-const float I_CAP_DISCHARGE_THRESHOLD =
-    -10.0f;  // 电容电流大于此值认为非强充电状态
+const float V_CAP_LOW_THRESHOLD = 10.0f;
+// 低于此电压开始抬高最低占空比
+const float V_CAP_PROTECT_TARGET = 8.0f;
+// 低压保护目标电压，下限占空比固定用此电压计算
+const float I_CAP_DISCHARGE_THRESHOLD = -10.0f;
+// 电容电流大于此值认为非强充电状态
 // 开关管驱动参数
 const uint32_t CYCLE_ZERO = 0;
 const uint32_t CYCLE_INDEX = 27200;
 const uint32_t HALF_CYCLE_INDEX = CYCLE_INDEX / 2;
 const float DUTY_INDEX = 0.9f;
 const float MAX_DUTY =
-    0.565f;  // buck-boost: D=Vout/(Vin+Vout), Vin=20V, Vout=26V
-const float MIN_DUTY = 0.01f;    // 最小占空比限制0.01f,用于缓启动'
-const float V_CAP_FULL = 26.0f;  // 电容安全满电电压
+    0.565f;  // 电池20V-电容组最大安全满电26V: 26/(20+26)=0.5652
+const float MIN_DUTY = 0.01f;    // 最小占空比限制0.01f,用于缓启动
+const float V_CAP_FULL = 26.0f;  // 电容安全满电电压(目标/钳制计算用)
 const float ALPHA = 0.1f;        // 低通滤波器系数
 
 // 保护机制时间常数定义

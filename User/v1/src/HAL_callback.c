@@ -70,6 +70,7 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef* htim) {
     if (htim->Instance == TIM16) {
         CAN_send();
         CAN_disconnect_detection();
+
         uint32_t counter = __HAL_TIM_GET_COUNTER(htim);
         if (CHASSIS_VOLTAGE_WINDOW_FILTER_FREQUENCY_INDEX == counter % 10) {
             // 滑动窗口更新

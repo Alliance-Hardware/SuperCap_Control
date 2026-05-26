@@ -1,48 +1,82 @@
-# SUPERCAP 
+# SUPERCAP
 
-简述：基于 STM32G4 的超级电容管理与闭环控制项目。代码按功能分层，便于替换算法或移植外设。
+基于 **STM32G4** 的超级电容管理与闭环控制项目，包含 CAN 通信、ADC 采样、MOS 驱动、PID 控制等模块。代码按功能分层，便于替换算法或移植外设，适合工程开发与学习参考。
 
-### 快速上手
-- 依赖：STM32 工具链（arm-none-eabi）、CMake、Ninja（或 MSVC 工具链）、VS Code（推荐 CMake Tools 插件）。
-- 本地构建（Windows，已生成 build）：  
-  cd d:\supercap\codes\SUPERCAP\build\Debug  
-  cmake --build . --config Debug
-- 在 VS Code 中打开仓库，使用 CMake Tools 导入并调试 main。
+## 目录结构
+- `Core/`：STM32CubeMX 生成的基础工程（时钟、外设初始化、启动文件）
+- `User/`：用户功能代码  
+  - `data/`：常量与全局模块数据（参数、阈值、运行时状态）  
+  - `interface/`：模块对外接口（供业务逻辑调用）  
+  - `math_tools/`：数学与算法工具（滤波、标定、控制计算）  
+  - `v1/src/`：业务逻辑与控制流程（主控制、CAN 回调、保护逻辑）
+- `cmake/`：交叉编译工具链配置
+- `build/`：构建输出目录（本地生成）
 
-### 代码目录
-- Core/Inc, Core/Src：CubeMX 生成的 MCU 外设初始化与中断入口（ADC、HRTIM、TIM、GPIO 等）。  
-- User/：项目代码，按模块分组：
-  - data/：常量与数据结构（const_data.h、module_data.h）。  
-  - interface/：模块头文件与回调接口（HAL_callback.h、Data_collect.h、MOS_driver.h、CAN_communicate.h）。  
-  - math_tools/：算法实现（ADC_Calibration、PID）。  
-  - v1/src、v2/src：C / C++ 不同版本的模块实现。  
-  - test/：测试用例（主机或模拟测试）。
+## 开发逻辑（模块协作）
+- **采样链路**：ADC 采样 → 标定（`math_tools`）→ 写入 `module_data`  
+- **控制链路**：控制回调中读取 `module_data` → PID 计算 → MOS 驱动输出  
+- **通信链路**：CAN 接收 → 更新目标功率与状态 → CAN 发送状态数据  
+- **保护链路**：过压/低压/断联/掉电检测 → 保护触发 → 停止输出与重置控制
 
-### 主要模块
-- HAL 回调（User/v1/src/HAL_callback.c）  
-  - 中断入口：ADC 完成、HRTIM Compare、定时器回调，调用数据处理与控制逻辑。
-- Data_collect（采样层）  
-  - HRTIM 触发 ADC 采样，ADC 回调写入 datacollect（原始 counts / 采样缓冲）。
-- ADC_Calibration（标定）  
-  - 两点校准：offset + scale。counts -> Vadc -> Vreal（再乘分压倍数）。  
-  - 若回调频繁，建议回调只存 counts，主循环/定时器做浮点校准。
-- PID_controller（控制器）  
-  - 电流环 / 电压环 / 功率环，按 TIM6/TIM7/TIM1 周期计算输出。
-- MOS_driver（驱动层）  
-  - 根据 PID 输出设置 MOS（PWM 或驱动逻辑）。
-- CAN_communicate（通信）  
-  - 接收目标功率与使能，定期发送状态（TIM16 触发）。
-  具体设计见https://fa4g5no1b1f.feishu.cn/wiki/AhU2wcN2ditQpXkVa6RcQfOXnyc
+> 设计原则：**数据集中管理（data）+ 接口解耦（interface）+ 业务逻辑统一调度（v1/src）**
 
-### 重要注意事项
-- datacollect 的生命周期：建议在单一 .c 中定义实例或在 main 中创建并通过注册函数（hal_callback_set_datacollect）一次性传入回调模块，回调无需重复注册。    
-- 回调中保持轻量：避免大量浮点运算或阻塞，复杂计算可移到定时器任务或主循环。
+## 控制逻辑（闭环流程）
+1. **定时中断回调**触发采样更新  
+2. **电压/电流标定**并写入 `module_data`  
+3. **PID 计算**输出占空比（电流/功率环）  
+4. **MOS 驱动**执行占空比更新  
+5. **保护判断**（过压/低压/掉电/断联）  
+6. 若触发保护 → **停止输出并重置 PID**
 
-### 测试与调试
-- 测试用例在 User/test/。在主机或支持 C++ 的环境编译运行这些测试以验证控制算法与 PWM 输出逻辑。  
-- 调试方法见https://fa4g5no1b1f.feishu.cn/wiki/MsbMw05AsiN0lbkC2NecwQ2knag
+## 通信逻辑（CAN）
+- **接收**：解析 CAN 数据帧，更新 `targetChassisPower` 与 `enabled`  
+- **校验**：目标功率范围裁剪，异常使能值保护  
+- **发送**：周期性广播当前电压、电流、功率等状态  
+- **断联检测**：未收到 CAN 超时进入保护状态
 
-### 维护建议
-- 头文件仅做声明（types / extern / prototypes），变量实体放 .c。避免头文件直接定义导致重定义或类型冲突。  
-- 将硬件常数（ADC 位宽、Vref、分压比）集中管理在 const_data.h，便于校准与移植。
+## 功能概览
+- CAN 通信（收发与状态检测）
+- ADC 采样与标定
+- 软启动与 MOS 驱动
+- PID 电流/功率闭环
+- 保护策略（过压/低压/断联/掉电检测）
+
+## 依赖环境
+- STM32 工具链（arm-none-eabi）
+- CMake
+- Ninja
+- VS Code（推荐 CMake Tools 插件）
+
+## 构建（Windows）
+> 使用 PowerShell 终端
+
+```bat
+cmake --preset Debug
+cmake --build --preset Debug
+```
+
+如果没有预设，可手动配置：
+
+```bat
+cmake -S . -B build -G "Ninja" -DCMAKE_TOOLCHAIN_FILE=cmake/gcc-arm-none-eabi.cmake -DCMAKE_BUILD_TYPE=Debug
+cmake --build build -- -j 4
+```
+
+## 常见问题
+### 1) 编译器检测失败
+确保使用交叉编译工具链（`arm-none-eabi-gcc`），并启用：
+```
+set(CMAKE_TRY_COMPILE_TARGET_TYPE STATIC_LIBRARY)
+```
+
+### 2) 使用了错误的编译器
+构建日志中若出现 `cc.exe`（MSYS2），说明未使用交叉工具链。请改用预设或指定 `CMAKE_TOOLCHAIN_FILE`。
+
+## 学习建议
+- 从 `User/v1/src/HAL_callback.c` 和 `User/v1/src/CAN_communicate.c` 入手了解控制流程  
+- `User/data/const_data.c` 为关键参数配置  
+- `User/data/module_data.c` 为运行时状态与模块数据结构  
+
+---
+如需扩展（如替换控制算法或加入新传感器），建议新增模块并通过 `interface/` 与主逻辑解耦。
 
