@@ -29,7 +29,6 @@
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 #include "ADC_Calibration.h"
-#include "Beef.h"
 #include "CAN_communicate.h"
 #include "Data_collect.h"
 #include "HAL_callback.h"
