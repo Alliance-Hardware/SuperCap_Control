@@ -89,7 +89,7 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef* htim) {
             }
             // 检测电池掉电情况，滤波后电压低于19V进行掉电检测自增
             else if (chassis_voltage_window < 19.0f) {
-                POWER_ERROR_DETECTION_TIME_INDEX += 20;
+                POWER_ERROR_DETECTION_TIME_INDEX += 10;
             } else {
                 POWER_ERROR_DETECTION_TIME_INDEX = 0;
             }

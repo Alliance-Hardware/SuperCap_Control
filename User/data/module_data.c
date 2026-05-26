@@ -52,3 +52,5 @@ float ADC_CALIBRATION_CONFIGS_BOARD[4][2] = {
     {0.0, 0.0},  // V_CAP
     {0.0, 0.0}   // I_CAP
 };
+
+int last_can_enable = 1;

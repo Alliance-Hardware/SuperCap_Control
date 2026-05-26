@@ -111,3 +111,5 @@ extern float dynamic_max_duty_pre;       // 上一次动态最大占空比
 extern float chassis_voltage_window;  // 底盘电压窗口滤波值
 extern float chassis_voltage_window_buf[10];
 extern uint8_t chassis_voltage_window_idx;
+
+extern int last_can_enable;
