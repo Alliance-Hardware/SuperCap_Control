@@ -44,7 +44,8 @@ extern const float ALPHA;
 // 保护机制时间常数定义
 extern const int MAX_POWER_ERROR_DETECTION_TIME;     // 最大底盘电压异常检测时间
 extern const int MAX_CAN_DISCONNECT_DETECTION_TIME;  // 最大CAN断联检测时间
-extern int POWER_ERROR_DETECTION_TIME_INDEX;     // 底盘电压异常检测时间计数变量
+extern int POWER_VOLTAGE_DETECTION_TIME_INDEX;   // 底盘电压掉电检测时间计数变量
+extern int POWER_CURRENT_DETECTION_TIME_INDEX;   // 底盘电流掉电检测时间计数变量
 extern int CAN_DISCONNECT_DETECTION_TIME_INDEX;  // CAN断联检测时间计数变量
 extern uint32_t PID_FREQUENCY_INDEX;             // PID控制频率计数变量
 

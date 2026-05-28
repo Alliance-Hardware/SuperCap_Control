@@ -52,7 +52,8 @@ const float ALPHA = 0.1f;        // 低通滤波器系数
 // 保护机制时间常数定义
 const int MAX_POWER_ERROR_DETECTION_TIME = 1000;     // 最大底盘电压异常检测时间
 const int MAX_CAN_DISCONNECT_DETECTION_TIME = 5000;  // 最大CAN断联检测时间
-int POWER_ERROR_DETECTION_TIME_INDEX = 0;     // 底盘电压异常检测时间计数变量
+int POWER_VOLTAGE_DETECTION_TIME_INDEX = 0;   // 底盘电压掉电检测时间计数变量
+int POWER_CURRENT_DETECTION_TIME_INDEX = 0;   // 底盘电流掉电检测时间计数变量
 int CAN_DISCONNECT_DETECTION_TIME_INDEX = 0;  // CAN断联检测时间计数变量
 uint32_t PID_FREQUENCY_INDEX = 0;             // PID控制频率计数变量
 

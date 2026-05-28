@@ -84,22 +84,28 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef* htim) {
             chassis_voltage_window = sum / 10;
 
             // 掉电检测逻辑
-            if (adc_data.I_CAP_ADC < -0.3f && adc_data.I_CHASSIS_ADC < 0.3f) {
-                POWER_ERROR_DETECTION_TIME_INDEX++;
-            }
-            // 检测电池掉电情况，滤波后电压低于19V进行掉电检测自增
-            else if (chassis_voltage_window < 19.0f) {
-                POWER_ERROR_DETECTION_TIME_INDEX += 10;
+            if (adc_data.I_CAP_ADC < -0.2f && adc_data.I_CHASSIS_ADC < 0.3f) {
+                POWER_CURRENT_DETECTION_TIME_INDEX += 10;
             } else {
-                POWER_ERROR_DETECTION_TIME_INDEX = 0;
+                POWER_CURRENT_DETECTION_TIME_INDEX = 0;
+            }
+            //  检测电池掉电情况，滤波后电压低于19V进行掉电检测自增
+            if (chassis_voltage_window < 19.0f) {
+                POWER_VOLTAGE_DETECTION_TIME_INDEX += 10;
+            } else {
+                POWER_VOLTAGE_DETECTION_TIME_INDEX = 0;
             }
             // 对于非电池断电情况进行掉电系数清零
-            if (POWER_ERROR_DETECTION_TIME_INDEX >=
-                MAX_POWER_ERROR_DETECTION_TIME) {
+            if (POWER_VOLTAGE_DETECTION_TIME_INDEX >=
+                    MAX_POWER_ERROR_DETECTION_TIME ||
+                POWER_CURRENT_DETECTION_TIME_INDEX >=
+                    MAX_POWER_ERROR_DETECTION_TIME) {
                 MosDriver_stop(&mos_driver);
                 PID_init(&power_pid_configs);
                 PID_init(&current_pid_configs);
-                POWER_ERROR_DETECTION_TIME_INDEX =
+                POWER_VOLTAGE_DETECTION_TIME_INDEX =
+                    MAX_POWER_ERROR_DETECTION_TIME;
+                POWER_CURRENT_DETECTION_TIME_INDEX =
                     MAX_POWER_ERROR_DETECTION_TIME;
                 // 掉电检测计数变量达到最大值，执行掉电保护，停止MOS驱动，重置PID，防止计数变量溢出,并且只执行一次，直到系统重启
             }
