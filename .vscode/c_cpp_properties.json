@@ -2,14 +2,17 @@
     "configurations": [
         {
             "name": "ARM GCC",
-            "compileCommands": "${workspaceFolder}/build/Debug/compile_commands.json",
+            "compileCommands": [
+                "${workspaceFolder}/build/Debug/compile_commands.json"
+            ],
             "intelliSenseMode": "gcc-arm",
             "includePath": [
                 "${workspaceFolder}/Core/Inc",
                 "${workspaceFolder}/Drivers/STM32G4xx_HAL_Driver/Inc",
                 "${workspaceFolder}/Drivers/CMSIS/Include",
                 "${workspaceFolder}/User/**",
-                "C:/Users/Administrator/AppData/Local/stm32cube/gnu-tools-for-stm32/13.3.1+st.9/arm-none-eabi/include"
+                "C:/Users/Administrator/AppData/Local/stm32cube/gnu-tools-for-stm32/13.3.1+st.9/arm-none-eabi/include",
+                "${workspaceFolder}/Drivers/CMSIS/Device/ST/STM32G4xx/Include"
             ],
             "defines": [
                 "STM32G474xx",
